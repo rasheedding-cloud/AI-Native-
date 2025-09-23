@@ -1,0 +1,123 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./ai-pm.db"
+}
+
+// 战略模型
+model Strategy {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  kpis        Kpi[]
+  initiatives Initiative[]
+
+  @@map("strategies")
+}
+
+// 战役模型
+model Initiative {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  strategyId  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  strategy    Strategy @relation(fields: [strategyId], references: [id], onDelete: Cascade)
+  projects    Project[]
+
+  @@map("initiatives")
+}
+
+// 项目模型
+model Project {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  initiativeId String
+  status      String   @default("PLANNING")  // PLANNING, IN_PROGRESS, COMPLETED, ON_HOLD, CANCELLED
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  initiative  Initiative @relation(fields: [initiativeId], references: [id], onDelete: Cascade)
+  tasks       Task[]
+
+  @@map("projects")
+}
+
+// 任务模型
+model Task {
+  id            String    @id @default(cuid())
+  title         String
+  description   String?
+  projectId     String
+  assignee      String?
+  priority      Float     @default(0.0)
+  estimate      Int?      // 预估时间（小时）
+  due           DateTime?
+  status        String    @default("TODO")  // PLANNING, IN_PROGRESS, COMPLETED, ON_HOLD, CANCELLED
+  dependencies  String?   // JSON格式存储依赖任务ID数组
+  kpiLinks      String?   // JSON格式存储关联的KPI数组
+  riskFlags     String?   // JSON格式存储风险标记数组
+  aiReasoning   String?   // AI建议理由
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  project       Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  subtasks      Subtask[]
+
+  @@map("tasks")
+}
+
+// 子任务模型
+model Subtask {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  taskId      String
+  completed   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  task        Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@map("subtasks")
+}
+
+// KPI模型
+model Kpi {
+  id          String   @id @default(cuid())
+  name        String
+  target      Float
+  current     Float    @default(0.0)
+  strategyId  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  strategy    Strategy @relation(fields: [strategyId], references: [id], onDelete: Cascade)
+
+  @@map("kpis")
+}
+
+// 合规风险记录
+model ComplianceRisk {
+  id          String   @id @default(cuid())
+  entityType  String   // task, project, initiative
+  entityId    String
+  sensitiveWords String? // JSON格式存储敏感词数组
+  riskLevel   String   @default("LOW")  // LOW, MEDIUM, HIGH
+  suggestions String?  // JSON格式存储建议数组
+  createdAt   DateTime @default(now())
+
+  @@map("compliance_risks")
+}

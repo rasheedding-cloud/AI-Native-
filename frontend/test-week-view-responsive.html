@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>周视图响应式测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            padding: 20px;
+        }
+
+        .test-container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .size-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .size-btn {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .size-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .size-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .viewport-container {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: #fafafa;
+            margin: 0 auto;
+        }
+
+        .week-view-demo {
+            width: 100%;
+            height: 600px;
+            padding: 16px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .week-header {
+            display: flex;
+            margin-bottom: 12px;
+            background: white;
+            border-radius: 6px;
+            overflow-x: auto;
+            min-width: fit-content;
+        }
+
+        .time-axis {
+            width: 80px;
+            flex-shrink: 0;
+            background: #fafafa;
+        }
+
+        .day-header {
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+            padding: 12px 8px;
+            background: white;
+            border-left: 1px solid #f0f0f0;
+            cursor: pointer;
+        }
+
+        .day-header.selected {
+            background: #e6f7ff;
+        }
+
+        .week-grid {
+            display: flex;
+            height: 520px;
+            overflow: auto;
+            border: 1px solid #f0f0f0;
+            border-radius: 6px;
+            background: white;
+        }
+
+        .time-slots {
+            width: 80px;
+            flex-shrink: 0;
+            background: #fafafa;
+        }
+
+        .time-slot {
+            height: 40px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: #666;
+            background: white;
+        }
+
+        .time-slot:nth-child(even) {
+            background: #fafafa;
+        }
+
+        .day-columns {
+            display: flex;
+            flex: 1;
+        }
+
+        .day-column {
+            flex: 1;
+            min-width: 120px;
+            border-left: 1px solid #f0f0f0;
+        }
+
+        .time-cell {
+            height: 40px;
+            border-bottom: 1px solid #f0f0f0;
+            border-right: 1px solid #f0f0f0;
+            background: white;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .time-cell:nth-child(even) {
+            background: #fafafa;
+        }
+
+        .time-cell.selected {
+            background: #f0f8ff;
+        }
+
+        .event {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            right: 2px;
+            background: #f0f9ff;
+            border: 1px solid #91d5ff;
+            border-radius: 4px;
+            padding: 4px;
+            font-size: 11px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .event.high-priority {
+            background: #fff1f0;
+            border-color: #ffccc7;
+        }
+
+        .event.medium-priority {
+            background: #fff7e6;
+            border-color: #ffd591;
+        }
+
+        .info-panel {
+            background: white;
+            border-radius: 6px;
+            padding: 16px;
+            margin-top: 20px;
+            border: 1px solid #f0f0f0;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 12px;
+        }
+
+        .info-item {
+            text-align: center;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 4px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .info-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* 响应式样式 */
+        @media (max-width: 1200px) {
+            .time-axis, .time-slots {
+                width: 60px;
+            }
+
+            .day-header, .day-column {
+                min-width: 100px;
+            }
+
+            .time-slot {
+                height: 35px;
+                font-size: 10px;
+            }
+
+            .time-cell {
+                height: 35px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .time-axis, .time-slots {
+                width: 50px;
+            }
+
+            .day-header, .day-column {
+                min-width: 80px;
+            }
+
+            .time-slot {
+                height: 30px;
+                font-size: 9px;
+            }
+
+            .time-cell {
+                height: 30px;
+            }
+
+            .event {
+                font-size: 9px;
+                padding: 2px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .time-axis, .time-slots {
+                width: 40px;
+            }
+
+            .day-header, .day-column {
+                min-width: 60px;
+            }
+
+            .time-slot {
+                height: 25px;
+                font-size: 8px;
+            }
+
+            .time-cell {
+                height: 25px;
+            }
+
+            .event {
+                font-size: 8px;
+                padding: 1px;
+            }
+        }
+
+        /* 滚动条样式 */
+        .week-header::-webkit-scrollbar,
+        .week-grid::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        .week-header::-webkit-scrollbar-track,
+        .week-grid::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .week-header::-webkit-scrollbar-thumb,
+        .week-grid::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+
+        .week-header::-webkit-scrollbar-thumb:hover,
+        .week-grid::-webkit-scrollbar-thumb:hover {
+            background: #a1a1a1;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>📅 周视图响应式布局测试</h1>
+
+        <div class="size-controls">
+            <button class="size-btn" data-width="100%">桌面端 (>1200px)</button>
+            <button class="size-btn" data-width="1000px">平板端 (768-1200px)</button>
+            <button class="size-btn" data-width="600px">手机端 (<768px)</button>
+            <button class="size-btn" data-width="400px">小屏幕 (<480px)</button>
+        </div>
+
+        <div class="viewport-container" id="viewport">
+            <div class="week-view-demo">
+                <div style="margin-bottom: 16px; font-size: 18px; font-weight: bold;">
+                    📅 周视图
+                    <span style="float: right; font-size: 12px; color: #666;">
+                        2024年01月15日
+                    </span>
+                </div>
+
+                <div class="week-header">
+                    <div class="time-axis"></div>
+                    <div class="day-header">
+                        <div style="font-size: 12px; color: #666; font-weight: 500;">周一</div>
+                        <div style="font-size: 16px; font-weight: 600;">15</div>
+                    </div>
+                    <div class="day-header">
+                        <div style="font-size: 12px; color: #666; font-weight: 500;">周二</div>
+                        <div style="font-size: 16px; font-weight: 600;">16</div>
+                    </div>
+                    <div class="day-header">
+                        <div style="font-size: 12px; color: #666; font-weight: 500;">周三</div>
+                        <div style="font-size: 16px; font-weight: 600;">17</div>
+                    </div>
+                    <div class="day-header selected">
+                        <div style="font-size: 12px; color: #666; font-weight: 500;">周四</div>
+                        <div style="font-size: 16px; font-weight: bold; color: #1890ff;">18</div>
+                    </div>
+                    <div class="day-header">
+                        <div style="font-size: 12px; color: #666; font-weight: 500;">周五</div>
+                        <div style="font-size: 16px; font-weight: 600;">19</div>
+                    </div>
+                    <div class="day-header">
+                        <div style="font-size: 12px; color: #666; font-weight: 500;">周六</div>
+                        <div style="font-size: 16px; font-weight: 600;">20</div>
+                    </div>
+                    <div class="day-header">
+                        <div style="font-size: 12px; color: #666; font-weight: 500;">周日</div>
+                        <div style="font-size: 16px; font-weight: 600;">21</div>
+                    </div>
+                </div>
+
+                <div class="week-grid">
+                    <div class="time-slots">
+                        <div class="time-slot">09:00</div>
+                        <div class="time-slot">10:00</div>
+                        <div class="time-slot">11:00</div>
+                        <div class="time-slot">12:00</div>
+                        <div class="time-slot">13:00</div>
+                        <div class="time-slot">14:00</div>
+                        <div class="time-slot">15:00</div>
+                        <div class="time-slot">16:00</div>
+                        <div class="time-slot">17:00</div>
+                        <div class="time-slot">18:00</div>
+                        <div class="time-slot">19:00</div>
+                        <div class="time-slot">20:00</div>
+                        <div class="time-slot">21:00</div>
+                    </div>
+
+                    <div class="day-columns">
+                        <div class="day-column">
+                            <div class="time-cell"></div>
+                            <div class="time-cell">
+                                <div class="event medium-priority">团队会议</div>
+                            </div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell">
+                                <div class="event">项目讨论</div>
+                            </div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                        </div>
+                        <div class="day-column">
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell">
+                                <div class="event high-priority">紧急任务</div>
+                            </div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                        </div>
+                        <div class="day-column">
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell">
+                                <div class="event">代码审查</div>
+                            </div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                        </div>
+                        <div class="day-column">
+                            <div class="time-cell selected"></div>
+                            <div class="time-cell selected">
+                                <div class="event">晨会</div>
+                            </div>
+                            <div class="time-cell selected"></div>
+                            <div class="time-cell selected"></div>
+                            <div class="time-cell selected"></div>
+                            <div class="time-cell selected">
+                                <div class="event high-priority">客户演示</div>
+                            </div>
+                            <div class="time-cell selected"></div>
+                            <div class="time-cell selected"></div>
+                            <div class="time-cell selected"></div>
+                            <div class="time-cell selected"></div>
+                            <div class="time-cell selected"></div>
+                            <div class="time-cell selected"></div>
+                            <div class="time-cell selected"></div>
+                        </div>
+                        <div class="day-column">
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell">
+                                <div class="event medium-priority">周报总结</div>
+                            </div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                        </div>
+                        <div class="day-column">
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                        </div>
+                        <div class="day-column">
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                            <div class="time-cell"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 12px; font-size: 11px; color: #999;">
+                    🕐 时间轴：早九点到晚九点（共13小时） | ⏱️ 每小时显示，支持拖拽安排任务
+                </div>
+            </div>
+        </div>
+
+        <div class="info-panel">
+            <h3>📊 响应式布局信息</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">当前视口宽度</div>
+                    <div class="info-value" id="current-width">100%</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">设备类型</div>
+                    <div class="info-value" id="device-type">桌面端</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">时间轴宽度</div>
+                    <div class="info-value" id="time-axis-width">80px</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">日期列宽度</div>
+                    <div class="info-value" id="day-column-width">120px</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 获取DOM元素
+        const viewport = document.getElementById('viewport');
+        const currentWidth = document.getElementById('current-width');
+        const deviceType = document.getElementById('device-type');
+        const timeAxisWidth = document.getElementById('time-axis-width');
+        const dayColumnWidth = document.getElementById('day-column-width');
+        const sizeButtons = document.querySelectorAll('.size-btn');
+
+        // 尺寸配置
+        const sizeConfig = {
+            '100%': { width: '100%', device: '桌面端', timeAxis: '80px', dayColumn: '120px' },
+            '1000px': { width: '1000px', device: '平板端', timeAxis: '60px', dayColumn: '100px' },
+            '600px': { width: '600px', device: '手机端', timeAxis: '50px', dayColumn: '80px' },
+            '400px': { width: '400px', device: '小屏幕', timeAxis: '40px', dayColumn: '60px' }
+        };
+
+        // 设置视口尺寸
+        function setViewportSize(width) {
+            const config = sizeConfig[width];
+            viewport.style.width = config.width;
+            viewport.style.maxWidth = config.width;
+            viewport.style.margin = '0 auto';
+
+            currentWidth.textContent = config.width;
+            deviceType.textContent = config.device;
+            timeAxisWidth.textContent = config.timeAxis;
+            dayColumnWidth.textContent = config.dayColumn;
+
+            // 更新按钮状态
+            sizeButtons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // 更新CSS变量
+            document.documentElement.style.setProperty('--time-axis-width', config.timeAxis);
+            document.documentElement.style.setProperty('--day-column-width', config.dayColumn);
+
+            // 更新实际样式
+            const timeAxisElements = document.querySelectorAll('.time-axis, .time-slots');
+            const dayHeaderElements = document.querySelectorAll('.day-header, .day-column');
+
+            timeAxisElements.forEach(el => {
+                el.style.width = config.timeAxis;
+            });
+
+            dayHeaderElements.forEach(el => {
+                el.style.minWidth = config.dayColumn;
+            });
+        }
+
+        // 绑定按钮事件
+        sizeButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                setViewportSize(e.target.dataset.width);
+            });
+        });
+
+        // 初始化
+        setViewportSize('100%');
+        sizeButtons[0].classList.add('active');
+
+        // 添加窗口大小变化监听
+        window.addEventListener('resize', () => {
+            const actualWidth = window.innerWidth;
+            let deviceType = '桌面端';
+            let timeAxis = '80px';
+            let dayColumn = '120px';
+
+            if (actualWidth < 480) {
+                deviceType = '小屏幕';
+                timeAxis = '40px';
+                dayColumn = '60px';
+            } else if (actualWidth < 768) {
+                deviceType = '手机端';
+                timeAxis = '50px';
+                dayColumn = '80px';
+            } else if (actualWidth < 1200) {
+                deviceType = '平板端';
+                timeAxis = '60px';
+                dayColumn = '100px';
+            }
+
+            currentWidth.textContent = `${actualWidth}px`;
+            deviceType.textContent = deviceType;
+            timeAxisWidth.textContent = timeAxis;
+            dayColumnWidth.textContent = dayColumn;
+        });
+
+        // 添加交互效果
+        document.querySelectorAll('.day-header, .time-cell').forEach(element => {
+            element.addEventListener('click', function() {
+                // 移除其他选中状态
+                document.querySelectorAll('.day-header, .time-cell').forEach(el => {
+                    el.classList.remove('selected');
+                });
+                // 添加选中状态
+                this.classList.add('selected');
+            });
+        });
+    </script>
+</body>
+</html>

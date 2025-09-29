@@ -49,10 +49,28 @@ model Project {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  initiative  Initiative @relation(fields: [initiativeId], references: [id], onDelete: Cascade)
+  initiative  Initiative        @relation(fields: [initiativeId], references: [id], onDelete: Cascade)
   tasks       Task[]
+  taskLists   TaskList[]
+  dependencies TaskDependency[]
 
   @@map("projects")
+}
+
+// 任务列表模型
+model TaskList {
+  id          String   @id @default(cuid())
+  projectId   String
+  name        String
+  sortOrder   Int      @default(0)
+  isArchived  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tasks       Task[]
+
+  @@map("task_lists")
 }
 
 // 任务模型
@@ -61,11 +79,15 @@ model Task {
   title         String
   description   String?
   projectId     String
+  listId        String?
   assignee      String?
   priority      Float     @default(0.0)
   estimate      Int?      // 预估时间（小时）
+  startDate     DateTime?
+  endDate       DateTime?
   due           DateTime?
-  status        String    @default("TODO")  // PLANNING, IN_PROGRESS, COMPLETED, ON_HOLD, CANCELLED
+  progress      Int       @default(0)  // 0-100的进度百分比
+  status        String    @default("TODO")  // TODO, DOING, DONE, BLOCKED
   dependencies  String?   // JSON格式存储依赖任务ID数组
   kpiLinks      String?   // JSON格式存储关联的KPI数组
   riskFlags     String?   // JSON格式存储风险标记数组
@@ -73,10 +95,32 @@ model Task {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  project       Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  project       Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  list          TaskList?  @relation(fields: [listId], references: [id], onDelete: SetNull)
   subtasks      Subtask[]
+  predecessors  TaskDependency[] @relation("TaskDependencySuccessor")
+  successors    TaskDependency[] @relation("TaskDependencyPredecessor")
+  calendarBlocks CalendarBlock[]
 
   @@map("tasks")
+}
+
+// 任务依赖关系模型
+model TaskDependency {
+  id                    String   @id @default(cuid())
+  projectId             String
+  predecessorTaskId     String
+  successorTaskId       String
+  type                  String   @default("FS")  // FS (Finish-to-Start)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  project               Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  predecessorTask       Task      @relation("TaskDependencySuccessor", fields: [predecessorTaskId], references: [id], onDelete: Cascade)
+  successorTask         Task      @relation("TaskDependencyPredecessor", fields: [successorTaskId], references: [id], onDelete: Cascade)
+
+  @@unique([predecessorTaskId, successorTaskId])
+  @@map("task_dependencies")
 }
 
 // 子任务模型
@@ -107,6 +151,31 @@ model Kpi {
   strategy    Strategy @relation(fields: [strategyId], references: [id], onDelete: Cascade)
 
   @@map("kpis")
+}
+
+// 日历时间块模型
+model CalendarBlock {
+  id            String    @id @default(cuid())
+  taskId        String
+  userId        String?   // 分配给的用户
+  title         String
+  description   String?
+  startTime     DateTime
+  endTime       DateTime
+  status        String    @default("PLANNED")  // PLANNED, IN_PROGRESS, COMPLETED, CANCELLED
+  priority      Int       @default(50)  // 1-100的优先级
+  progress      Int       @default(0)  // 0-100的进度百分比
+  isRecurring   Boolean   @default(false)
+  recurringRule String?   // 重复规则，JSON格式
+  aiReasoning   String?   // AI调度理由
+  conflictLevel String    @default("NONE")  // NONE, LOW, MEDIUM, HIGH
+  conflictInfo  String?   // JSON格式存储冲突信息
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  task          Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@map("calendar_blocks")
 }
 
 // 合规风险记录

@@ -109,3 +109,4 @@ npm install -D nodemon ts-node jest @types/jest
 - All development must follow the three-phase rollout plan
 - Never modify requirements without user confirmation
 - Maintain clear separation from Youth Business systems and data
+- 每完成一步 todo 都要调用 code-reviewer 进行代码审查

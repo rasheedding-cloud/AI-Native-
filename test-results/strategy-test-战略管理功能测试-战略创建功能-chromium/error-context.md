@@ -1,0 +1,124 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - complementary [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e7]:
+          - img "robot" [ref=e8]:
+            - img [ref=e9]
+          - generic [ref=e11]: AI PM
+        - menu [ref=e12]:
+          - menuitem "dashboard 仪表盘" [ref=e13] [cursor=pointer]:
+            - img "dashboard" [ref=e14] [cursor=pointer]:
+              - img [ref=e15] [cursor=pointer]
+            - link "仪表盘" [ref=e18] [cursor=pointer]:
+              - /url: /
+          - menuitem "aim 战略管理" [ref=e19] [cursor=pointer]:
+            - img "aim" [ref=e20] [cursor=pointer]:
+              - img [ref=e21] [cursor=pointer]
+            - link "战略管理" [ref=e25] [cursor=pointer]:
+              - /url: /strategies
+          - menuitem "project 战役管理" [ref=e26] [cursor=pointer]:
+            - img "project" [ref=e27] [cursor=pointer]:
+              - img [ref=e28] [cursor=pointer]
+            - link "战役管理" [ref=e31] [cursor=pointer]:
+              - /url: /initiatives
+          - menuitem "project 项目管理" [ref=e32] [cursor=pointer]:
+            - img "project" [ref=e33] [cursor=pointer]:
+              - img [ref=e34] [cursor=pointer]
+            - link "项目管理" [ref=e37] [cursor=pointer]:
+              - /url: /projects
+          - menuitem "check-square 任务管理" [ref=e38] [cursor=pointer]:
+            - img "check-square" [ref=e39] [cursor=pointer]:
+              - img [ref=e40] [cursor=pointer]
+            - link "任务管理" [ref=e44] [cursor=pointer]:
+              - /url: /tasks
+          - menuitem "line-chart KPI管理" [ref=e45] [cursor=pointer]:
+            - img "line-chart" [ref=e46] [cursor=pointer]:
+              - img [ref=e47] [cursor=pointer]
+            - link "KPI管理" [ref=e50] [cursor=pointer]:
+              - /url: /kpis
+          - menuitem "warning 风险管理" [ref=e51] [cursor=pointer]:
+            - img "warning" [ref=e52] [cursor=pointer]:
+              - img [ref=e53] [cursor=pointer]
+            - link "风险管理" [ref=e56] [cursor=pointer]:
+              - /url: /risks
+          - menuitem "robot AI功能" [ref=e57] [cursor=pointer]:
+            - img "robot" [ref=e58] [cursor=pointer]:
+              - img [ref=e59] [cursor=pointer]
+            - link "AI功能" [ref=e62] [cursor=pointer]:
+              - /url: /ai
+          - menuitem "setting 设置" [ref=e63] [cursor=pointer]:
+            - img "setting" [ref=e64] [cursor=pointer]:
+              - img [ref=e65] [cursor=pointer]
+            - link "设置" [ref=e68] [cursor=pointer]:
+              - /url: /settings
+      - img "left" [ref=e70] [cursor=pointer]:
+        - img [ref=e71] [cursor=pointer]
+    - generic [ref=e73]:
+      - banner [ref=e74]:
+        - navigation [ref=e76]:
+          - list [ref=e77]:
+            - listitem [ref=e78]:
+              - link "首页" [ref=e80] [cursor=pointer]:
+                - /url: /
+            - listitem [ref=e81]: /
+            - listitem [ref=e82]:
+              - link "战略管理" [ref=e84] [cursor=pointer]:
+                - /url: /strategies
+        - generic [ref=e85]:
+          - img "robot" [ref=e86]:
+            - img [ref=e87]
+          - generic [ref=e89]: AI Native 项目管理工具
+      - main [ref=e90]:
+        - generic [ref=e92]:
+          - generic [ref=e94]:
+            - generic [ref=e96]:
+              - generic [ref=e97]: 🎯
+              - generic [ref=e98]: 战略管理
+              - generic [ref=e99]: 0 个战略
+            - generic [ref=e101]:
+              - generic [ref=e104]:
+                - searchbox "搜索战略..." [ref=e106]
+                - button "search" [ref=e109] [cursor=pointer]:
+                  - img "search" [ref=e111] [cursor=pointer]:
+                    - img [ref=e112] [cursor=pointer]
+              - button "plus 创建战略" [ref=e115] [cursor=pointer]:
+                - img "plus" [ref=e117] [cursor=pointer]:
+                  - img [ref=e118] [cursor=pointer]
+                - generic [ref=e121] [cursor=pointer]: 创建战略
+          - table [ref=e130]:
+            - rowgroup [ref=e131]:
+              - row "战略名称 描述 KPI数量 战役数量 创建时间 操作" [ref=e132]:
+                - columnheader "战略名称" [ref=e133]
+                - columnheader "描述" [ref=e134]
+                - columnheader "KPI数量" [ref=e135]
+                - columnheader "战役数量" [ref=e136]
+                - columnheader "创建时间" [ref=e137]
+                - columnheader "操作" [ref=e138]
+            - rowgroup [ref=e139]:
+              - row "暂无数据 暂无数据" [ref=e140]:
+                - cell "暂无数据 暂无数据" [ref=e141]:
+                  - generic [ref=e143]:
+                    - img "暂无数据" [ref=e145]
+                    - generic [ref=e151]: 暂无数据
+  - generic [ref=e152]:
+    - dialog "创建战略":
+      - generic [ref=e153]:
+        - button "Close" [ref=e154] [cursor=pointer]:
+          - img "close" [ref=e156] [cursor=pointer]:
+            - img [ref=e157] [cursor=pointer]
+        - generic [ref=e160]: 创建战略
+        - generic [ref=e162]:
+          - generic [ref=e164]:
+            - generic "战略名称" [ref=e166]: "* 战略名称"
+            - textbox "* 战略名称" [active] [ref=e170]: 测试战略创建
+          - textbox "战略描述" [ref=e178]
+          - generic [ref=e184]:
+            - button "取 消" [ref=e186] [cursor=pointer]:
+              - generic [ref=e187] [cursor=pointer]: 取 消
+            - button "创 建" [ref=e189] [cursor=pointer]:
+              - generic [ref=e190] [cursor=pointer]: 创 建
+```

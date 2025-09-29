@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "node",
+      "args": ["C:\\Users\\kulso\\WPSDrive\\563745033\\WPS云盘\\51Talk\\AI Native项目管理\\mcp-server\\dist\\index.js"],
+      "env": {}
+    }
+  }
+}

@@ -1,0 +1,72 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e7]:
+        - img "robot" [ref=e8]:
+          - img [ref=e9]
+        - generic [ref=e11]: AI PM
+      - menu [ref=e12]:
+        - menuitem "dashboard 仪表盘" [ref=e13] [cursor=pointer]:
+          - img "dashboard" [ref=e14] [cursor=pointer]:
+            - img [ref=e15] [cursor=pointer]
+          - link "仪表盘" [ref=e18] [cursor=pointer]:
+            - /url: /
+        - menuitem "aim 战略管理" [ref=e19] [cursor=pointer]:
+          - img "aim" [ref=e20] [cursor=pointer]:
+            - img [ref=e21] [cursor=pointer]
+          - link "战略管理" [ref=e25] [cursor=pointer]:
+            - /url: /strategies
+        - menuitem "project 战役管理" [ref=e26] [cursor=pointer]:
+          - img "project" [ref=e27] [cursor=pointer]:
+            - img [ref=e28] [cursor=pointer]
+          - link "战役管理" [ref=e31] [cursor=pointer]:
+            - /url: /initiatives
+        - menuitem "project 项目管理" [ref=e32] [cursor=pointer]:
+          - img "project" [ref=e33] [cursor=pointer]:
+            - img [ref=e34] [cursor=pointer]
+          - link "项目管理" [ref=e37] [cursor=pointer]:
+            - /url: /projects
+        - menuitem "check-square 任务管理" [ref=e38] [cursor=pointer]:
+          - img "check-square" [ref=e39] [cursor=pointer]:
+            - img [ref=e40] [cursor=pointer]
+          - link "任务管理" [ref=e44] [cursor=pointer]:
+            - /url: /tasks
+        - menuitem "line-chart KPI管理" [ref=e45] [cursor=pointer]:
+          - img "line-chart" [ref=e46] [cursor=pointer]:
+            - img [ref=e47] [cursor=pointer]
+          - link "KPI管理" [ref=e50] [cursor=pointer]:
+            - /url: /kpis
+        - menuitem "warning 风险管理" [ref=e51] [cursor=pointer]:
+          - img "warning" [ref=e52] [cursor=pointer]:
+            - img [ref=e53] [cursor=pointer]
+          - link "风险管理" [ref=e56] [cursor=pointer]:
+            - /url: /risks
+        - menuitem "robot AI功能" [ref=e57] [cursor=pointer]:
+          - img "robot" [ref=e58] [cursor=pointer]:
+            - img [ref=e59] [cursor=pointer]
+          - link "AI功能" [ref=e62] [cursor=pointer]:
+            - /url: /ai
+        - menuitem "setting 设置" [ref=e63] [cursor=pointer]:
+          - img "setting" [ref=e64] [cursor=pointer]:
+            - img [ref=e65] [cursor=pointer]
+          - link "设置" [ref=e68] [cursor=pointer]:
+            - /url: /settings
+    - img "left" [ref=e70] [cursor=pointer]:
+      - img [ref=e71] [cursor=pointer]
+  - generic [ref=e73]:
+    - banner [ref=e74]:
+      - navigation [ref=e76]:
+        - list [ref=e77]:
+          - listitem [ref=e78]:
+            - link "首页" [ref=e80] [cursor=pointer]:
+              - /url: /
+      - generic [ref=e81]:
+        - img "robot" [ref=e82]:
+          - img [ref=e83]
+        - generic [ref=e85]: AI Native 项目管理工具
+    - main [ref=e86]:
+      - generic [ref=e87]: 加载中...
+```

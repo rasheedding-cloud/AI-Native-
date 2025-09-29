@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>战略表单测试</title>
+</head>
+<body>
+    <h1>战略表单测试</h1>
+    <form id="strategyForm">
+        <div>
+            <label>战略名称:</label>
+            <input type="text" id="name" required>
+        </div>
+        <div>
+            <label>战略描述:</label>
+            <textarea id="description"></textarea>
+        </div>
+        <button type="submit">创建战略</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('strategyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const description = document.getElementById('description').value;
+
+            try {
+                const response = await fetch('http://localhost:5176/api/strategies', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name, description }),
+                });
+
+                const result = await response.json();
+                document.getElementById('result').innerHTML = `
+                    <h3>结果:</h3>
+                    <pre>${JSON.stringify(result, null, 2)}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h3>错误:</h3>
+                    <pre>${error.message}</pre>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

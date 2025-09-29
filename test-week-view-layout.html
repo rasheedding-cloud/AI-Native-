@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>周视图布局修复测试</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+        }
+
+        .test-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            height: 64px;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .content {
+            flex: 1;
+            padding: 24px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .week-view-demo {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 16px;
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .week-header {
+            margin-bottom: 16px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .date-headers {
+            display: flex;
+            margin-bottom: 12px;
+            background: white;
+            border-radius: 6px;
+        }
+
+        .time-column {
+            width: 80px;
+            flex-shrink: 0;
+        }
+
+        .day-header {
+            flex: 1;
+            text-align: center;
+            padding: 12px 8px;
+            cursor: pointer;
+            border-left: 1px solid #f0f0f0;
+        }
+
+        .day-header:first-child {
+            border-left: none;
+        }
+
+        .grid-container {
+            flex: 1;
+            overflow: auto;
+            border: 1px solid #f0f0f0;
+            border-radius: 6px;
+            background: white;
+        }
+
+        .grid {
+            display: flex;
+            min-width: fit-content;
+        }
+
+        .time-slots {
+            width: 80px;
+            flex-shrink: 0;
+            background: #fafafa;
+        }
+
+        .time-slot {
+            height: 45px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: #666;
+            background: #fafafa;
+        }
+
+        .time-slot:nth-child(even) {
+            background: white;
+        }
+
+        .day-columns {
+            display: flex;
+            flex: 1;
+        }
+
+        .day-column {
+            flex: 1;
+            border-left: 1px solid #f0f0f0;
+            min-width: 120px;
+        }
+
+        .time-cell {
+            height: 45px;
+            border-bottom: 1px solid #f0f0f0;
+            border-right: 1px solid #f0f0f0;
+            background: white;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .time-cell:nth-child(even) {
+            background: #fafafa;
+        }
+
+        .event {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            right: 2px;
+            background: #e6f7ff;
+            border: 1px solid #91d5ff;
+            border-radius: 4px;
+            padding: 4px;
+            font-size: 11px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .info-panel {
+            margin-top: 16px;
+            padding: 16px;
+            background: #f0f0f0;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .controls {
+            margin-bottom: 16px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .control-btn {
+            padding: 8px 16px;
+            background: #1890ff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .control-btn:hover {
+            background: #40a9ff;
+        }
+
+        .height-info {
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* 滚动条样式 */
+        .grid-container::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        .grid-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .grid-container::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+
+        .grid-container::-webkit-scrollbar-thumb:hover {
+            background: #a1a1a1;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="header">
+            <h2>周视图布局修复测试</h2>
+        </div>
+
+        <div class="content">
+            <div class="controls">
+                <button class="control-btn" onclick="adjustHeight(400)">设置高度 400px</button>
+                <button class="control-btn" onclick="adjustHeight(500)">设置高度 500px</button>
+                <button class="control-btn" onclick="adjustHeight(600)">设置高度 600px</button>
+                <button class="control-btn" onclick="adjustHeight('auto')">自动高度</button>
+                <span class="height-info" id="heightInfo">当前高度: 自动</span>
+            </div>
+
+            <div class="week-view-demo" id="weekViewDemo">
+                <div class="week-header">📅 周视图演示 (2024年1月15日 - 1月21日)</div>
+
+                <div class="date-headers">
+                    <div class="time-column"></div>
+                    <div class="day-header">
+                        <div style="font-size: 12px; color: #666;">周一</div>
+                        <div style="font-size: 16px; font-weight: bold;">15</div>
+                    </div>
+                    <div class="day-header">
+                        <div style="font-size: 12px; color: #666;">周二</div>
+                        <div style="font-size: 16px;">16</div>
+                    </div>
+                    <div class="day-header">
+                        <div style="font-size: 12px; color: #666;">周三</div>
+                        <div style="font-size: 16px;">17</div>
+                    </div>
+                    <div class="day-header">
+                        <div style="font-size: 12px; color: #666;">周四</div>
+                        <div style="font-size: 16px;">18</div>
+                    </div>
+                    <div class="day-header">
+                        <div style="font-size: 12px; color: #666;">周五</div>
+                        <div style="font-size: 16px;">19</div>
+                    </div>
+                    <div class="day-header">
+                        <div style="font-size: 12px; color: #666;">周六</div>
+                        <div style="font-size: 16px;">20</div>
+                    </div>
+                    <div class="day-header">
+                        <div style="font-size: 12px; color: #666;">周日</div>
+                        <div style="font-size: 16px;">21</div>
+                    </div>
+                </div>
+
+                <div class="grid-container">
+                    <div class="grid">
+                        <div class="time-slots">
+                            <div class="time-slot">09:00</div>
+                            <div class="time-slot">10:00</div>
+                            <div class="time-slot">11:00</div>
+                            <div class="time-slot">12:00</div>
+                            <div class="time-slot">13:00</div>
+                            <div class="time-slot">14:00</div>
+                            <div class="time-slot">15:00</div>
+                            <div class="time-slot">16:00</div>
+                            <div class="time-slot">17:00</div>
+                            <div class="time-slot">18:00</div>
+                            <div class="time-slot">19:00</div>
+                            <div class="time-slot">20:00</div>
+                            <div class="time-slot">21:00</div>
+                        </div>
+
+                        <div class="day-columns">
+                            <div class="day-column">
+                                <div class="time-cell"></div>
+                                <div class="time-cell">
+                                    <div class="event">团队会议</div>
+                                </div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell">
+                                    <div class="event">项目评审</div>
+                                </div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                            </div>
+                            <div class="day-column">
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell">
+                                    <div class="event">客户会议</div>
+                                </div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                            </div>
+                            <div class="day-column">
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell">
+                                    <div class="event">代码审查</div>
+                                </div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                            </div>
+                            <div class="day-column">
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                            </div>
+                            <div class="day-column">
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                            </div>
+                            <div class="day-column">
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                            </div>
+                            <div class="day-column">
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                                <div class="time-cell"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-panel">
+                    <div><strong>修复说明：</strong></div>
+                    <div>• 移除了固定高度限制，改用动态计算</div>
+                    <div>• 添加了滚动条支持，确保内容可以完整查看</div>
+                    <div>• 优化了容器嵌套关系，避免高度冲突</div>
+                    <div>• 添加了响应式支持，适应不同屏幕尺寸</div>
+                    <div>• 使用 overflow: auto 确保内容超出时可以滚动查看</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function adjustHeight(height) {
+            const weekViewDemo = document.getElementById('weekViewDemo');
+            const heightInfo = document.getElementById('heightInfo');
+
+            if (height === 'auto') {
+                weekViewDemo.style.height = 'auto';
+                heightInfo.textContent = '当前高度: 自动';
+            } else {
+                weekViewDemo.style.height = height + 'px';
+                heightInfo.textContent = `当前高度: ${height}px`;
+            }
+        }
+
+        // 模拟窗口大小变化
+        window.addEventListener('resize', function() {
+            console.log('窗口大小变化，重新计算布局');
+        });
+    </script>
+</body>
+</html>

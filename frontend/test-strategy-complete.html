@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>战略功能测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        .result {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+        }
+        .success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        .strategies-list {
+            margin-top: 20px;
+        }
+        .strategy-item {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .strategy-name {
+            font-weight: bold;
+            color: #333;
+        }
+        .strategy-description {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .strategy-meta {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🎯 战略管理功能测试</h1>
+        <p>测试战略创建、查看、编辑和删除功能</p>
+    </div>
+
+    <div class="card">
+        <h2>创建新战略</h2>
+        <form id="strategyForm">
+            <div class="form-group">
+                <label for="name">战略名称 *</label>
+                <input type="text" id="name" required placeholder="请输入战略名称">
+            </div>
+            <div class="form-group">
+                <label for="description">战略描述</label>
+                <textarea id="description" rows="3" placeholder="请输入战略描述（可选）"></textarea>
+            </div>
+            <button type="submit" id="submitBtn">创建战略</button>
+        </form>
+        <div id="result"></div>
+    </div>
+
+    <div class="card">
+        <h2>现有战略列表</h2>
+        <button id="loadStrategies" onclick="loadStrategies()">刷新列表</button>
+        <div id="strategiesList" class="strategies-list"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3001';
+
+        document.getElementById('strategyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const description = document.getElementById('description').value;
+            const submitBtn = document.getElementById('submitBtn');
+            const result = document.getElementById('result');
+
+            submitBtn.classList.add('loading');
+            submitBtn.textContent = '创建中...';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/strategies`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name, description }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    result.className = 'result success';
+                    result.innerHTML = `
+                        <h3>✅ 创建成功</h3>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                    document.getElementById('strategyForm').reset();
+                    loadStrategies();
+                } else {
+                    result.className = 'result error';
+                    result.innerHTML = `
+                        <h3>❌ 创建失败</h3>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `
+                    <h3>❌ 网络错误</h3>
+                    <pre>${error.message}</pre>
+                `;
+            } finally {
+                submitBtn.classList.remove('loading');
+                submitBtn.textContent = '创建战略';
+            }
+        });
+
+        async function loadStrategies() {
+            const strategiesList = document.getElementById('strategiesList');
+            strategiesList.innerHTML = '<p>加载中...</p>';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/strategies`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    const strategies = data.data || data;
+                    if (strategies.length === 0) {
+                        strategiesList.innerHTML = '<p>暂无战略数据</p>';
+                    } else {
+                        strategiesList.innerHTML = strategies.map(strategy => `
+                            <div class="strategy-item">
+                                <div class="strategy-name">${strategy.name}</div>
+                                ${strategy.description ? `<div class="strategy-description">${strategy.description}</div>` : ''}
+                                <div class="strategy-meta">
+                                    ID: ${strategy.id} |
+                                    创建时间: ${new Date(strategy.createdAt).toLocaleString()} |
+                                    KPI数量: ${strategy.kpis?.length || 0} |
+                                    战役数量: ${strategy.initiatives?.length || 0}
+                                </div>
+                                <button onclick="deleteStrategy('${strategy.id}')" style="background: #dc3545; margin-top: 10px; padding: 5px 10px; font-size: 12px;">删除</button>
+                            </div>
+                        `).join('');
+                    }
+                } else {
+                    strategiesList.innerHTML = `<div class="error">加载失败: ${JSON.stringify(data)}</div>`;
+                }
+            } catch (error) {
+                strategiesList.innerHTML = `<div class="error">网络错误: ${error.message}</div>`;
+            }
+        }
+
+        async function deleteStrategy(id) {
+            if (!confirm('确定要删除这个战略吗？')) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/api/strategies/${id}`, {
+                    method: 'DELETE',
+                });
+
+                if (response.ok) {
+                    alert('删除成功');
+                    loadStrategies();
+                } else {
+                    const data = await response.json();
+                    alert(`删除失败: ${JSON.stringify(data)}`);
+                }
+            } catch (error) {
+                alert(`网络错误: ${error.message}`);
+            }
+        }
+
+        // 页面加载时自动获取战略列表
+        loadStrategies();
+    </script>
+</body>
+</html>

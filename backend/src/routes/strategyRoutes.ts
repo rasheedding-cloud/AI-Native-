@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { asyncHandler, createError } from '../middleware/errorHandler';
 
@@ -6,7 +6,7 @@ const router = express.Router();
 const prisma = new PrismaClient();
 
 // 获取所有战略
-router.get('/', asyncHandler(async (req, res) => {
+router.get('/', asyncHandler(async (_req: Request, res: Response) => {
   const strategies = await prisma.strategy.findMany({
     include: {
       kpis: true,
@@ -30,7 +30,7 @@ router.get('/', asyncHandler(async (req, res) => {
 }));
 
 // 创建战略
-router.post('/', asyncHandler(async (req, res) => {
+router.post('/', asyncHandler(async (req: Request, res: Response) => {
   const { name, description } = req.body;
 
   if (!name) {
@@ -55,7 +55,7 @@ router.post('/', asyncHandler(async (req, res) => {
 }));
 
 // 获取单个战略
-router.get('/:id', asyncHandler(async (req, res) => {
+router.get('/:id', asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
 
   const strategy = await prisma.strategy.findUnique({
@@ -85,7 +85,7 @@ router.get('/:id', asyncHandler(async (req, res) => {
 }));
 
 // 更新战略
-router.put('/:id', asyncHandler(async (req, res) => {
+router.put('/:id', asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
   const { name, description } = req.body;
 
@@ -108,7 +108,7 @@ router.put('/:id', asyncHandler(async (req, res) => {
 }));
 
 // 删除战略
-router.delete('/:id', asyncHandler(async (req, res) => {
+router.delete('/:id', asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
 
   await prisma.strategy.delete({

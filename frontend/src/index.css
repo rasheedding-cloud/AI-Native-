@@ -1,68 +1,850 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import './styles/dashboard.css';
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  /* Primary Colors */
+  --primary-color: #667eea;
+  --primary-color-dark: #5a67d8;
+  --primary-color-light: #7c8ff0;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* Secondary Colors */
+  --secondary-color: #764ba2;
+  --secondary-color-dark: #6b46a3;
+  --secondary-color-light: #8b5bbd;
+
+  /* Gradient Colors */
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  --gradient-tertiary: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  --gradient-quaternary: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+
+  /* Neutral Colors */
+  --background-color: #f8fafc;
+  --surface-color: #ffffff;
+  --surface-color-alt: #f1f5f9;
+  --text-color: #1e293b;
+  --text-color-secondary: #64748b;
+  --text-color-light: #94a3b8;
+  --border-color: #e2e8f0;
+  --border-color-light: #f1f5f9;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --shadow-color-hover: rgba(0, 0, 0, 0.15);
+
+  /* Status Colors */
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --error-color: #ef4444;
+  --info-color: #3b82f6;
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.1);
+  --shadow-2xl: 0 16px 32px rgba(0, 0, 0, 0.1);
+
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.4s ease;
+
+  color-scheme: light;
+  color: var(--text-color);
+  background-color: var(--background-color);
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+/* Global Styles */
+* {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
+  padding: 0;
   min-width: 320px;
   min-height: 100vh;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text-color);
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.75rem; }
+h4 { font-size: 1.5rem; }
+h5 { font-size: 1.25rem; }
+h6 { font-size: 1rem; }
+
+p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--primary-color-dark);
+}
+
+/* Button Styles */
+.ant-btn {
+  border-radius: var(--radius-md);
   font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  transition: all var(--transition-normal);
+  border: 1px solid transparent;
+  box-shadow: var(--shadow-sm);
 }
 
-@media (prefers-color-scheme: light) {
+.ant-btn-primary {
+  background: var(--gradient-primary);
+  border: none;
+  color: white;
+}
+
+.ant-btn-primary:hover,
+.ant-btn-primary:focus {
+  background: var(--gradient-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  color: white;
+}
+
+.ant-btn-lg {
+  padding: 12px 24px;
+  font-size: 16px;
+  height: auto;
+}
+
+.ant-btn-sm {
+  padding: 6px 12px;
+  font-size: 12px;
+  height: auto;
+}
+
+/* Input Styles */
+.ant-input,
+.ant-input-number,
+.ant-select-selector {
+  border-radius: var(--radius-md) !important;
+  border: 1px solid var(--border-color) !important;
+  transition: all var(--transition-normal) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.ant-input:focus,
+.ant-input-number:focus,
+.ant-select-focused .ant-select-selector {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2) !important;
+}
+
+.ant-input:hover,
+.ant-input-number:hover,
+.ant-select:hover .ant-select-selector {
+  border-color: var(--primary-color-light) !important;
+}
+
+/* Card Styles */
+.ant-card {
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-md) !important;
+  border: none !important;
+  transition: all var(--transition-normal) !important;
+}
+
+.ant-card:hover {
+  box-shadow: var(--shadow-lg) !important;
+  transform: translateY(-2px);
+}
+
+.ant-card-head {
+  border-bottom: 1px solid var(--border-color-light) !important;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0 !important;
+  background: var(--surface-color) !important;
+}
+
+.ant-card-head-title {
+  font-weight: 600 !important;
+  color: var(--text-color) !important;
+}
+
+.ant-card-body {
+  padding: var(--spacing-lg) !important;
+  background: var(--surface-color) !important;
+}
+
+/* Table Styles */
+.ant-table {
+  border-radius: var(--radius-md) !important;
+  overflow: hidden !important;
+}
+
+.ant-table-thead > tr > th {
+  background: var(--surface-color-alt) !important;
+  border-bottom: 2px solid var(--border-color) !important;
+  font-weight: 600 !important;
+  color: var(--text-color) !important;
+}
+
+.ant-table-tbody > tr:hover > td {
+  background: rgba(102, 126, 234, 0.05) !important;
+}
+
+.ant-table-tbody > tr:nth-child(even) > td {
+  background: var(--surface-color-alt) !important;
+}
+
+.ant-table-tbody > tr:nth-child(even):hover > td {
+  background: rgba(102, 126, 234, 0.08) !important;
+}
+
+/* Modal Styles */
+.ant-modal {
+  border-radius: var(--radius-lg) !important;
+  overflow: hidden !important;
+}
+
+.ant-modal-content {
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-2xl) !important;
+}
+
+.ant-modal-header {
+  border-bottom: 1px solid var(--border-color-light) !important;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0 !important;
+  background: var(--surface-color) !important;
+}
+
+.ant-modal-title {
+  font-weight: 600 !important;
+  color: var(--text-color) !important;
+}
+
+.ant-modal-body {
+  background: var(--surface-color-alt) !important;
+}
+
+/* Form Styles */
+.ant-form-item-label > label {
+  font-weight: 500 !important;
+  color: var(--text-color) !important;
+}
+
+.ant-form-item-explain-error {
+  color: var(--error-color) !important;
+}
+
+/* Tag Styles */
+.ant-tag {
+  border-radius: var(--radius-sm) !important;
+  border: none !important;
+  font-weight: 500 !important;
+  padding: 2px 8px !important;
+}
+
+/* Progress Styles */
+.ant-progress-bg {
+  border-radius: var(--radius-sm) !important;
+}
+
+/* Tabs Styles */
+.ant-tabs-tab {
+  border-radius: var(--radius-md) var(--radius-md) 0 0 !important;
+  transition: all var(--transition-normal) !important;
+}
+
+.ant-tabs-tab:hover {
+  color: var(--primary-color) !important;
+  background: rgba(102, 126, 234, 0.1) !important;
+}
+
+.ant-tabs-tab-active {
+  color: var(--primary-color) !important;
+  border-bottom: 2px solid var(--primary-color) !important;
+}
+
+/* Menu Styles */
+.ant-menu {
+  border-radius: var(--radius-md) !important;
+}
+
+.ant-menu-item {
+  border-radius: var(--radius-md) !important;
+  margin: 4px 0 !important;
+  transition: all var(--transition-normal) !important;
+}
+
+.ant-menu-item:hover {
+  background: rgba(102, 126, 234, 0.1) !important;
+  transform: translateX(4px) !important;
+}
+
+.ant-menu-item-selected {
+  background: var(--gradient-primary) !important;
+  color: white !important;
+}
+
+.ant-menu-item-selected::after {
+  display: none !important;
+}
+
+/* Layout Styles */
+.ant-layout {
+  background: var(--background-color) !important;
+}
+
+.ant-layout-header {
+  background: var(--surface-color) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.ant-layout-sider {
+  background: var(--surface-color) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.ant-layout-content {
+  background: var(--background-color) !important;
+}
+
+/* Select Styles */
+.ant-select-dropdown {
+  border-radius: var(--radius-md) !important;
+  box-shadow: var(--shadow-lg) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.ant-select-item-option:hover {
+  background: rgba(102, 126, 234, 0.1) !important;
+}
+
+.ant-select-item-option-selected {
+  background: rgba(102, 126, 234, 0.2) !important;
+  color: var(--primary-color) !important;
+}
+
+/* Tooltip Styles */
+.ant-tooltip-inner {
+  border-radius: var(--radius-md) !important;
+  background: var(--text-color) !important;
+}
+
+/* Loading Styles */
+.ant-spin-dot {
+  background-color: var(--primary-color) !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    font-size: 14px;
   }
-  a:hover {
-    color: #747bff;
+
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.75rem; }
+  h3 { font-size: 1.5rem; }
+  h4 { font-size: 1.25rem; }
+  h5 { font-size: 1.1rem; }
+  h6 { font-size: 1rem; }
+
+  .ant-card {
+    margin: var(--spacing-sm) !important;
   }
-  button {
-    background-color: #f9f9f9;
+
+  .ant-modal {
+    margin: var(--spacing-md) !important;
   }
+
+  .ant-table-wrapper {
+    overflow-x: auto !important;
+  }
+
+  .ant-form-item {
+    margin-bottom: var(--spacing-md) !important;
+  }
+
+  .ant-btn {
+    font-size: 14px !important;
+  }
+}
+
+/* Utility Classes */
+.gradient-text {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-bg {
+  background: var(--gradient-primary);
+  color: white;
+}
+
+.shadow-hover {
+  transition: box-shadow var(--transition-normal);
+}
+
+.shadow-hover:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.transform-hover {
+  transition: transform var(--transition-normal);
+}
+
+.transform-hover:hover {
+  transform: translateY(-2px);
+}
+
+/* Animation Classes */
+.fade-in {
+  animation: fadeIn var(--transition-normal) ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.slide-in {
+  animation: slideIn var(--transition-normal) ease-out;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+/* Enhanced responsive utilities */
+.responsive-container {
+  width: 100%;
+  min-width: 280px;
+  overflow: hidden;
+}
+
+.responsive-flex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.responsive-grid {
+  display: grid;
+  gap: var(--spacing-md);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+/* Responsive padding and spacing */
+.responsive-padding {
+  padding: var(--spacing-md);
+}
+
+.responsive-margin {
+  margin: var(--spacing-md);
+}
+
+@media (max-width: 768px) {
+  .responsive-padding {
+    padding: var(--spacing-sm);
+  }
+
+  .responsive-margin {
+    margin: var(--spacing-sm);
+  }
+
+  .responsive-flex {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+}
+
+/* Responsive text sizes */
+.responsive-text-lg {
+  font-size: 1.25rem;
+}
+
+.responsive-text-md {
+  font-size: 1rem;
+}
+
+.responsive-text-sm {
+  font-size: 0.875rem;
+}
+
+@media (max-width: 768px) {
+  .responsive-text-lg {
+    font-size: 1.125rem;
+  }
+
+  .responsive-text-md {
+    font-size: 0.875rem;
+  }
+
+  .responsive-text-sm {
+    font-size: 0.75rem;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .ant-layout-sider,
+  .ant-layout-header,
+  .ant-btn {
+    display: none !important;
+  }
+
+  .ant-layout-content {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .ant-card {
+    box-shadow: none !important;
+    border: 1px solid var(--border-color) !important;
+    break-inside: avoid;
+  }
+}
+
+/* Accessibility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Focus Styles */
+*:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  :root {
+    --border-color: #000000;
+    --text-color: #000000;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Calendar View Specific Styles */
+.week-view-container {
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-width: 280px !important;
+}
+
+.week-grid-container {
+  overflow: auto !important;
+  flex: 1 !important;
+  min-height: 300px !important;
+  min-width: fit-content !important;
+}
+
+.calendar-tab-content {
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 300px !important;
+  min-width: 280px !important;
+}
+
+/* Fix for nested containers */
+.ant-tabs-content {
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+.ant-tabs-tabpane {
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+.kanban-tab-content {
+  height: 100% !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.calendar-tab-content {
+  height: 100% !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Ensure proper height calculation for calendar components */
+.calendar-view-wrapper {
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow-x: visible !important;
+  overflow-y: hidden !important;
+  min-width: 280px !important;
+}
+
+/* 强制修复外层容器的overflow问题 */
+.ant-layout-content {
+  overflow-x: visible !important;
+  overflow-y: auto !important;
+}
+
+/* 确保任务页面的内容区域可以滚动 */
+.ant-layout-content > div {
+  overflow-x: visible !important;
+  overflow-y: auto !important;
+}
+
+/* Tabs内容区域修复 */
+.ant-tabs-content,
+.ant-tabs-tabpane {
+  overflow-x: visible !important;
+  overflow-y: auto !important;
+}
+
+/* Calendar View Specific Styles - 增强版 */
+.calendar-tab-content {
+  overflow-x: visible !important;
+  overflow-y: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 300px !important;
+  min-width: 280px !important;
+  width: fit-content !important;
+  max-width: none !important;
+}
+
+/* 针对关键约束容器的修复 */
+/* 修复位于312-1193px位置的div容器 */
+.calendar-view-wrapper > div {
+  overflow-x: visible !important;
+  overflow-y: hidden !important;
+  width: fit-content !important;
+  min-width: 600px !important;
+}
+
+/* 修复所有可能的约束容器 */
+.week-view-container > div,
+.calendar-view-wrapper > div,
+.ant-card-body > div,
+.ant-tabs-content-holder > div {
+  overflow-x: visible !important;
+  overflow-y: hidden !important;
+  width: fit-content !important;
+}
+
+/* 修复AI优先级停靠容器 */
+.ai-priority-dock {
+  overflow-x: visible !important;
+  overflow-y: auto !important;
+}
+
+/* 修复所有可能的约束容器 */
+.week-view-container > div,
+.calendar-view-wrapper > div,
+.ant-card-body > div,
+.ant-tabs-content-holder > div {
+  overflow-x: visible !important;
+  overflow-y: hidden !important;
+}
+
+/* Responsive adjustments for calendar */
+@media (max-height: 768px) {
+  .week-grid-container {
+    max-height: 400px !important;
+  }
+
+  .time-slot {
+    height: 30px !important;
+    font-size: 10px !important;
+  }
+}
+
+@media (max-height: 600px) {
+  .week-grid-container {
+    max-height: 300px !important;
+  }
+
+  .time-slot {
+    height: 23px !important;
+    font-size: 9px !important;
+  }
+}
+
+/* Enhanced responsive calendar styles */
+@media (max-width: 1200px) {
+  .ai-priority-dock {
+    width: 250px !important;
+    max-width: 250px !important;
+  }
+
+  .week-day-column {
+    min-width: 100px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .ai-priority-dock {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-bottom: 8px;
+  }
+
+  .week-view-container {
+    padding: 8px !important;
+  }
+
+  .week-day-header {
+    padding: 8px 4px !important;
+  }
+
+  .time-slot {
+    height: 30px !important;
+    font-size: 9px !important;
+  }
+
+  .calendar-event {
+    padding: 2px !important;
+    font-size: 9px !important;
+  }
+
+  .calendar-view-wrapper {
+    min-width: 280px !important;
+  }
+
+  /* 移动端日历容器优化 */
+  .calendar-tab-content {
+    min-height: 300px !important;
+    padding: 8px !important;
+  }
+
+  /* 移动端模态框优化 */
+  .ant-modal {
+    margin: 10px !important;
+    max-width: 95vw !important;
+  }
+
+  .ant-modal-body {
+    padding: 12px !important;
+  }
+
+  .ant-form-item {
+    margin-bottom: 12px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .week-view-container {
+    padding: 4px !important;
+  }
+
+  .time-slot {
+    height: 25px !important;
+    font-size: 8px !important;
+  }
+
+  .calendar-event {
+    font-size: 8px !important;
+    padding: 1px !important;
+  }
+
+  .week-day-header {
+    padding: 4px 2px !important;
+  }
+
+  .week-day-column {
+    min-width: 80px !important;
+  }
+
+  /* 超小屏幕优化 */
+  .calendar-tab-content {
+    min-height: 250px !important;
+    padding: 4px !important;
+  }
+}
+
+/* 横向滚动优化 */
+.week-grid-container::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.week-grid-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 2px;
+}
+
+.week-grid-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 2px;
+}
+
+.week-grid-container::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
+/* 确保日历组件在小屏幕上不会被挤压 */
+.calendar-view-wrapper > div:first-child {
+  flex-wrap: wrap !important;
+}
+
+.ai-priority-dock {
+  transition: all 0.3s ease;
 }

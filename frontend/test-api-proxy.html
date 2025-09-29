@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API代理测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .request-details {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>API代理测试</h1>
+
+        <div id="status"></div>
+
+        <h2>测试项目</h2>
+        <button onclick="testStrategies()">测试战略API</button>
+        <button onclick="testDirectRequest()">测试直接请求</button>
+        <button onclick="clearStatus()">清空状态</button>
+
+        <div id="details"></div>
+    </div>
+
+    <script>
+        const statusDiv = document.getElementById('status');
+        const detailsDiv = document.getElementById('details');
+
+        function showStatus(message, type = 'info') {
+            const statusElement = document.createElement('div');
+            statusElement.className = `status ${type}`;
+            statusElement.innerHTML = `${new Date().toLocaleTimeString()} - ${message}`;
+            statusDiv.appendChild(statusElement);
+            statusDiv.scrollTop = statusDiv.scrollHeight;
+        }
+
+        function showDetails(details) {
+            const detailsElement = document.createElement('div');
+            detailsElement.className = 'request-details';
+            detailsElement.innerHTML = `<strong>请求详情:</strong><br><pre>${JSON.stringify(details, null, 2)}</pre>`;
+            detailsDiv.appendChild(detailsElement);
+            detailsDiv.scrollTop = detailsDiv.scrollHeight;
+        }
+
+        function clearStatus() {
+            statusDiv.innerHTML = '';
+            detailsDiv.innerHTML = '';
+        }
+
+        async function testStrategies() {
+            try {
+                showStatus('开始测试战略API...', 'info');
+
+                // 测试获取所有战略
+                const response = await fetch('/api/strategies', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                const responseData = await response.json();
+
+                showDetails({
+                    url: '/api/strategies',
+                    method: 'GET',
+                    status: response.status,
+                    statusText: response.statusText,
+                    response: responseData
+                });
+
+                if (response.ok) {
+                    showStatus(`✅ 战略API测试成功！状态码: ${response.status}`, 'success');
+                    if (responseData.data) {
+                        showStatus(`📊 找到 ${responseData.data.length} 个战略`, 'success');
+                    }
+                } else {
+                    showStatus(`❌ 战略API测试失败！状态码: ${response.status}`, 'error');
+                }
+
+            } catch (error) {
+                showStatus(`❌ 战略API测试失败！错误: ${error.message}`, 'error');
+                showDetails({ error: error.message, stack: error.stack });
+            }
+        }
+
+        async function testDirectRequest() {
+            try {
+                showStatus('开始测试直接请求后端...', 'info');
+
+                // 测试直接请求后端（不通过代理）
+                const response = await fetch('http://localhost:3001/api/strategies', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                const responseData = await response.json();
+
+                showDetails({
+                    url: 'http://localhost:3001/api/strategies',
+                    method: 'GET',
+                    status: response.status,
+                    statusText: response.statusText,
+                    response: responseData
+                });
+
+                if (response.ok) {
+                    showStatus(`✅ 直接请求测试成功！状态码: ${response.status}`, 'success');
+                    if (responseData.data) {
+                        showStatus(`📊 找到 ${responseData.data.length} 个战略`, 'success');
+                    }
+                } else {
+                    showStatus(`❌ 直接请求测试失败！状态码: ${response.status}`, 'error');
+                }
+
+            } catch (error) {
+                showStatus(`❌ 直接请求测试失败！错误: ${error.message}`, 'error');
+                showDetails({ error: error.message, stack: error.stack });
+            }
+        }
+
+        // 页面加载时自动测试
+        window.onload = function() {
+            showStatus('页面加载完成，开始自动测试...', 'info');
+            setTimeout(testStrategies, 1000);
+        };
+    </script>
+</body>
+</html>

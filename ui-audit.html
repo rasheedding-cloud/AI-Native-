@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UI状态检查工具</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .page-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .page-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            background: #fafafa;
+        }
+        .page-card h3 {
+            margin-top: 0;
+            color: #667eea;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .status.good {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status.warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .check-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .check-item:last-child {
+            border-bottom: none;
+        }
+        .check-name {
+            font-weight: 500;
+        }
+        .check-result {
+            font-size: 12px;
+        }
+        .iframe-container {
+            margin-top: 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .iframe-container iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+        }
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 0 10px;
+            font-size: 14px;
+        }
+        .btn:hover {
+            background: #5a67d8;
+        }
+        .report {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .report h3 {
+            margin-top: 0;
+            color: #495057;
+        }
+        .issue {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 10px 0;
+        }
+        .issue.error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        .issue.success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 AI Native 项目管理系统 - UI状态检查工具</h1>
+
+        <div class="controls">
+            <button class="btn" onclick="checkAllPages()">🔍 检查所有页面</button>
+            <button class="btn" onclick="checkDashboard()">📊 专项检查Dashboard</button>
+            <button class="btn" onclick="generateReport()">📋 生成报告</button>
+        </div>
+
+        <div class="page-grid">
+            <div class="page-card">
+                <h3>📊 Dashboard <span class="status" id="dashboard-status">待检查</span></h3>
+                <div class="check-item">
+                    <span class="check-name">页面加载</span>
+                    <span class="check-result" id="dashboard-load">-</span>
+                </div>
+                <div class="check-item">
+                    <span class="check-name">饼图显示</span>
+                    <span class="check-result" id="dashboard-pie">-</span>
+                </div>
+                <div class="check-item">
+                    <span class="check-name">图表容器</span>
+                    <span class="check-result" id="dashboard-charts">-</span>
+                </div>
+                <div class="check-item">
+                    <span class="check-name">响应式设计</span>
+                    <span class="check-result" id="dashboard-responsive">-</span>
+                </div>
+            </div>
+
+            <div class="page-card">
+                <h3>🎯 战略管理 <span class="status" id="strategies-status">待检查</span></h3>
+                <div class="check-item">
+                    <span class="check-name">页面加载</span>
+                    <span class="check-result" id="strategies-load">-</span>
+                </div>
+                <div class="check-item">
+                    <span class="check-name">表格显示</span>
+                    <span class="check-result" id="strategies-table">-</span>
+                </div>
+                <div class="check-item">
+                    <span class="check-name">按钮功能</span>
+                    <span class="check-result" id="strategies-buttons">-</span>
+                </div>
+                <div class="check-item">
+                    <span class="check-name">模态框</span>
+                    <span class="check-result" id="strategies-modal">-</span>
+                </div>
+            </div>
+
+            <div class="page-card">
+                <h3>📋 任务管理 <span class="status" id="tasks-status">待检查</span></h3>
+                <div class="check-item">
+                    <span class="check-name">页面加载</span>
+                    <span class="check-result" id="tasks-load">-</span>
+                </div>
+                <div class="check-item">
+                    <span class="check-name">标签页</span>
+                    <span class="check-result" id="tasks-tabs">-</span>
+                </div>
+                <div class="check-item">
+                    <span class="check-name">表格显示</span>
+                    <span class="check-result" id="tasks-table">-</span>
+                </div>
+                <div class="check-item">
+                    <span class="check-name">看板视图</span>
+                    <span class="check-result" id="tasks-kanban">-</span>
+                </div>
+            </div>
+
+            <div class="page-card">
+                <h3>📈 KPI管理 <span class="status" id="kpis-status">待检查</span></h3>
+                <div class="check-item">
+                    <span class="check-name">页面加载</span>
+                    <span class="check-result" id="kpis-load">-</span>
+                </div>
+                <div class="check-item">
+                    <span class="check-name">数据表格</span>
+                    <span class="check-result" id="kpis-table">-</span>
+                </div>
+                <div class="check-item">
+                    <span class="check-name">图表显示</span>
+                    <span class="check-result" id="kpis-charts">-</span>
+                </div>
+                <div class="check-item">
+                    <span class="check-name">编辑功能</span>
+                    <span class="check-result" id="kpis-edit">-</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="iframe-container">
+            <iframe id="preview-frame" src="http://localhost:3000"></iframe>
+        </div>
+
+        <div class="report" id="report" style="display: none;">
+            <h3>📋 检查报告</h3>
+            <div id="report-content"></div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'http://localhost:3000';
+        const frame = document.getElementById('preview-frame');
+
+        // 页面检查配置
+        const pageChecks = {
+            dashboard: {
+                path: '/',
+                checks: [
+                    { name: 'load', selector: '.dashboard-container', description: '页面加载' },
+                    { name: 'pie', selector: '.recharts-pie, svg', description: '饼图显示' },
+                    { name: 'charts', selector: '.chart-card', description: '图表容器' },
+                    { name: 'responsive', selector: '.stat-card', description: '响应式设计' }
+                ]
+            },
+            strategies: {
+                path: '/strategies',
+                checks: [
+                    { name: 'load', selector: '.ant-table', description: '页面加载' },
+                    { name: 'table', selector: '.ant-table-tbody', description: '表格显示' },
+                    { name: 'buttons', selector: '.ant-btn-primary', description: '按钮功能' },
+                    { name: 'modal', selector: '.ant-modal', description: '模态框' }
+                ]
+            },
+            tasks: {
+                path: '/tasks',
+                checks: [
+                    { name: 'load', selector: '.ant-tabs', description: '页面加载' },
+                    { name: 'tabs', selector: '.ant-tabs-tab', description: '标签页' },
+                    { name: 'table', selector: '.ant-table', description: '表格显示' },
+                    { name: 'kanban', selector: '.kanban-board', description: '看板视图' }
+                ]
+            },
+            kpis: {
+                path: '/kpis',
+                checks: [
+                    { name: 'load', selector: '.ant-table', description: '页面加载' },
+                    { name: 'table', selector: '.ant-table-tbody', description: '数据表格' },
+                    { name: 'charts', selector: '.chart-container', description: '图表显示' },
+                    { name: 'edit', selector: '.ant-btn', description: '编辑功能' }
+                ]
+            }
+        };
+
+        // 检查单个页面
+        async function checkPage(pageName, config) {
+            console.log(`开始检查 ${pageName} 页面...`);
+
+            // 设置iframe src
+            frame.src = BASE_URL + config.path;
+
+            // 等待页面加载
+            await new Promise(resolve => setTimeout(resolve, 3000));
+
+            let allPassed = true;
+            const results = {};
+
+            // 检查每个项目
+            for (const check of config.checks) {
+                try {
+                    const frameDoc = frame.contentDocument || frame.contentWindow.document;
+                    const element = frameDoc.querySelector(check.selector);
+
+                    if (element) {
+                        results[check.name] = '✓ 通过';
+                        updateCheckResult(pageName, check.name, '✓ 通过', 'good');
+                    } else {
+                        results[check.name] = '✗ 失败';
+                        updateCheckResult(pageName, check.name, '✗ 失败', 'error');
+                        allPassed = false;
+                    }
+                } catch (error) {
+                    results[check.name] = '⚠️ 错误';
+                    updateCheckResult(pageName, check.name, '⚠️ 错误', 'warning');
+                    allPassed = false;
+                }
+            }
+
+            // 更新页面状态
+            const statusElement = document.getElementById(`${pageName}-status`);
+            if (statusElement) {
+                statusElement.textContent = allPassed ? '良好' : '问题';
+                statusElement.className = `status ${allPassed ? 'good' : 'error'}`;
+            }
+
+            return results;
+        }
+
+        // 更新检查结果
+        function updateCheckResult(pageName, checkName, result, status) {
+            const element = document.getElementById(`${pageName}-${checkName}`);
+            if (element) {
+                element.textContent = result;
+                element.style.color = status === 'good' ? '#155724' : status === 'error' ? '#721c24' : '#856404';
+            }
+        }
+
+        // 检查所有页面
+        async function checkAllPages() {
+            console.log('开始检查所有页面...');
+
+            for (const [pageName, config] of Object.entries(pageChecks)) {
+                await checkPage(pageName, config);
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+
+            alert('所有页面检查完成！');
+        }
+
+        // 专项检查Dashboard
+        async function checkDashboard() {
+            console.log('开始专项检查Dashboard...');
+
+            frame.src = BASE_URL + '/';
+            await new Promise(resolve => setTimeout(resolve, 3000));
+
+            try {
+                const frameDoc = frame.contentDocument || frame.contentWindow.document;
+
+                // 检查饼图
+                const pieCharts = frameDoc.querySelectorAll('.recharts-pie, svg');
+                const pieResult = pieCharts.length > 0 ? `找到 ${pieCharts.length} 个图表` : '未找到饼图';
+                updateCheckResult('dashboard', 'pie', pieResult, pieCharts.length > 0 ? 'good' : 'error');
+
+                // 检查图表容器
+                const chartContainers = frameDoc.querySelectorAll('.chart-container, .responsive-chart');
+                const containerResult = chartContainers.length > 0 ? `找到 ${chartContainers.length} 个容器` : '未找到容器';
+                updateCheckResult('dashboard', 'charts', containerResult, chartContainers.length > 0 ? 'good' : 'error');
+
+                // 检查控制台错误
+                const consoleErrors = [];
+                frame.contentWindow.console.error = (...args) => {
+                    consoleErrors.push(args.join(' '));
+                };
+
+                await new Promise(resolve => setTimeout(resolve, 2000));
+
+                if (consoleErrors.length > 0) {
+                    console.log('控制台错误:', consoleErrors);
+                }
+
+                alert('Dashboard检查完成！');
+            } catch (error) {
+                console.error('Dashboard检查失败:', error);
+                alert('Dashboard检查失败，请查看控制台');
+            }
+        }
+
+        // 生成报告
+        function generateReport() {
+            console.log('生成检查报告...');
+
+            const reportContent = document.getElementById('report-content');
+            const reportDiv = document.getElementById('report');
+
+            let reportHTML = '<h4>📊 检查结果汇总</h4>';
+
+            // 收集所有检查结果
+            const allResults = [];
+            for (const [pageName, config] of Object.entries(pageChecks)) {
+                for (const check of config.checks) {
+                    const element = document.getElementById(`${pageName}-${check.name}`);
+                    if (element) {
+                        allResults.push({
+                            page: pageName,
+                            check: check.description,
+                            result: element.textContent
+                        });
+                    }
+                }
+            }
+
+            // 统计结果
+            const passed = allResults.filter(r => r.result === '✓ 通过').length;
+            const failed = allResults.filter(r => r.result === '✗ 失败').length;
+            const warnings = allResults.filter(r => r.result === '⚠️ 错误').length;
+
+            reportHTML += `
+                <div class="issue success">
+                    <strong>✅ 通过:</strong> ${passed} 项
+                </div>
+                <div class="issue error">
+                    <strong>❌ 失败:</strong> ${failed} 项
+                </div>
+                <div class="issue">
+                    <strong>⚠️ 警告:</strong> ${warnings} 项
+                </div>
+            `;
+
+            // 详细结果
+            reportHTML += '<h4>🔍 详细结果</h4>';
+            allResults.forEach(result => {
+                const statusClass = result.result === '✓ 通过' ? 'success' : result.result === '✗ 失败' ? 'error' : '';
+                reportHTML += `
+                    <div class="issue ${statusClass}">
+                        <strong>${result.page} - ${result.check}:</strong> ${result.result}
+                    </div>
+                `;
+            });
+
+            // 建议
+            reportHTML += '<h4>💡 修复建议</h4>';
+
+            if (failed > 0) {
+                reportHTML += `
+                    <div class="issue error">
+                        <strong>🔧 紧急修复:</strong><br>
+                        1. 检查Dashboard饼图显示问题<br>
+                        2. 确保所有页面元素正确加载<br>
+                        3. 修复样式冲突问题
+                    </div>
+                `;
+            }
+
+            if (warnings > 0) {
+                reportHTML += `
+                    <div class="issue">
+                        <strong>⚠️ 需要关注:</strong><br>
+                        1. 检查浏览器控制台错误<br>
+                        2. 优化响应式设计<br>
+                        3. 提升用户体验
+                    </div>
+                `;
+            }
+
+            if (failed === 0 && warnings === 0) {
+                reportHTML += `
+                    <div class="issue success">
+                        <strong>🎉 状态良好:</strong><br>
+                        所有检查项目都通过了，继续保持！
+                    </div>
+                `;
+            }
+
+            reportContent.innerHTML = reportHTML;
+            reportDiv.style.display = 'block';
+
+            // 滚动到报告区域
+            reportDiv.scrollIntoView({ behavior: 'smooth' });
+
+            console.log('报告生成完成！');
+        }
+
+        // 页面加载完成后自动检查
+        window.addEventListener('load', () => {
+            console.log('UI检查工具已加载');
+            setTimeout(checkDashboard, 2000);
+        });
+
+        // 监听iframe加载完成
+        frame.addEventListener('load', () => {
+            console.log('iframe页面加载完成');
+        });
+    </script>
+</body>
+</html>

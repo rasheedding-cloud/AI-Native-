@@ -1,0 +1,203 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e7]:
+        - img "robot" [ref=e8]:
+          - img [ref=e9]
+        - generic [ref=e11]: AI PM
+      - menu [ref=e12]:
+        - menuitem "dashboard 仪表盘" [ref=e13] [cursor=pointer]:
+          - img "dashboard" [ref=e14] [cursor=pointer]:
+            - img [ref=e15] [cursor=pointer]
+          - link "仪表盘" [ref=e18] [cursor=pointer]:
+            - /url: /
+        - menuitem "aim 战略管理" [ref=e19] [cursor=pointer]:
+          - img "aim" [ref=e20] [cursor=pointer]:
+            - img [ref=e21] [cursor=pointer]
+          - link "战略管理" [ref=e25] [cursor=pointer]:
+            - /url: /strategies
+        - menuitem "project 战役管理" [ref=e26] [cursor=pointer]:
+          - img "project" [ref=e27] [cursor=pointer]:
+            - img [ref=e28] [cursor=pointer]
+          - link "战役管理" [ref=e31] [cursor=pointer]:
+            - /url: /initiatives
+        - menuitem "project 项目管理" [ref=e32] [cursor=pointer]:
+          - img "project" [ref=e33] [cursor=pointer]:
+            - img [ref=e34] [cursor=pointer]
+          - link "项目管理" [ref=e37] [cursor=pointer]:
+            - /url: /projects
+        - menuitem "check-square 任务管理" [ref=e38] [cursor=pointer]:
+          - img "check-square" [ref=e39] [cursor=pointer]:
+            - img [ref=e40] [cursor=pointer]
+          - link "任务管理" [ref=e44] [cursor=pointer]:
+            - /url: /tasks
+        - menuitem "line-chart KPI管理" [ref=e45] [cursor=pointer]:
+          - img "line-chart" [ref=e46] [cursor=pointer]:
+            - img [ref=e47] [cursor=pointer]
+          - link "KPI管理" [ref=e50] [cursor=pointer]:
+            - /url: /kpis
+        - menuitem "warning 风险管理" [ref=e51] [cursor=pointer]:
+          - img "warning" [ref=e52] [cursor=pointer]:
+            - img [ref=e53] [cursor=pointer]
+          - link "风险管理" [ref=e56] [cursor=pointer]:
+            - /url: /risks
+        - menuitem "robot AI功能" [ref=e57] [cursor=pointer]:
+          - img "robot" [ref=e58] [cursor=pointer]:
+            - img [ref=e59] [cursor=pointer]
+          - link "AI功能" [ref=e62] [cursor=pointer]:
+            - /url: /ai
+        - menuitem "setting 设置" [ref=e63] [cursor=pointer]:
+          - img "setting" [ref=e64] [cursor=pointer]:
+            - img [ref=e65] [cursor=pointer]
+          - link "设置" [ref=e68] [cursor=pointer]:
+            - /url: /settings
+    - img "left" [ref=e70] [cursor=pointer]:
+      - img [ref=e71] [cursor=pointer]
+  - generic [ref=e73]:
+    - banner [ref=e74]:
+      - navigation [ref=e76]:
+        - list [ref=e77]:
+          - listitem [ref=e78]:
+            - link "首页" [ref=e80] [cursor=pointer]:
+              - /url: /
+      - generic [ref=e81]:
+        - img "robot" [ref=e82]:
+          - img [ref=e83]
+        - generic [ref=e85]: AI Native 项目管理工具
+    - main [ref=e86]:
+      - generic [ref=e87]:
+        - generic [ref=e88]:
+          - heading "📊 仪表盘" [level=2] [ref=e89]:
+            - generic [ref=e90]: 📊
+            - generic [ref=e91]: 仪表盘
+          - generic [ref=e92]: AI Native 项目管理系统 - 实时数据概览
+        - generic [ref=e93]:
+          - generic [ref=e97] [cursor=pointer]:
+            - generic [ref=e98] [cursor=pointer]: 🎯
+            - generic [ref=e99] [cursor=pointer]:
+              - generic [ref=e100] [cursor=pointer]: 战略总数
+              - generic [ref=e103] [cursor=pointer]: "0"
+          - generic [ref=e107] [cursor=pointer]:
+            - generic [ref=e108] [cursor=pointer]: ⚔️
+            - generic [ref=e109] [cursor=pointer]:
+              - generic [ref=e110] [cursor=pointer]: 战役总数
+              - generic [ref=e113] [cursor=pointer]: "0"
+          - generic [ref=e117] [cursor=pointer]:
+            - generic [ref=e118] [cursor=pointer]: 📋
+            - generic [ref=e119] [cursor=pointer]:
+              - generic [ref=e120] [cursor=pointer]: 项目总数
+              - generic [ref=e123] [cursor=pointer]: "0"
+          - generic [ref=e127] [cursor=pointer]:
+            - generic [ref=e128] [cursor=pointer]: ✅
+            - generic [ref=e129] [cursor=pointer]:
+              - generic [ref=e130] [cursor=pointer]: 任务总数
+              - generic [ref=e133] [cursor=pointer]: "0"
+        - generic [ref=e134]:
+          - generic [ref=e136] [cursor=pointer]:
+            - generic [ref=e140] [cursor=pointer]:
+              - generic [ref=e141] [cursor=pointer]: 📈
+              - generic [ref=e142] [cursor=pointer]: KPI 完成情况
+              - generic [ref=e143] [cursor=pointer]: 模拟数据
+            - generic [ref=e144] [cursor=pointer]:
+              - alert [ref=e145] [cursor=pointer]:
+                - img "info-circle" [ref=e146] [cursor=pointer]:
+                  - img [ref=e147] [cursor=pointer]
+                - generic [ref=e149] [cursor=pointer]:
+                  - generic [ref=e150] [cursor=pointer]: 暂无KPI数据
+                  - generic [ref=e151] [cursor=pointer]: 请先在KPI管理页面创建KPI指标，或查看模拟数据
+              - list [ref=e155] [cursor=pointer]:
+                - listitem [ref=e156] [cursor=pointer]:
+                  - generic [ref=e157] [cursor=pointer]:
+                    - generic [ref=e158] [cursor=pointer]:
+                      - generic [ref=e159] [cursor=pointer]: 体验课转化率
+                      - generic [ref=e160] [cursor=pointer]:
+                        - generic [ref=e161] [cursor=pointer]: 80.0%
+                        - generic [ref=e162] [cursor=pointer]: 完成率
+                    - generic [ref=e163] [cursor=pointer]:
+                      - generic [ref=e164] [cursor=pointer]:
+                        - strong [ref=e166] [cursor=pointer]: "16"
+                        - generic [ref=e167] [cursor=pointer]: "目标: 20"
+                      - progressbar [ref=e168] [cursor=pointer]
+                    - generic [ref=e173] [cursor=pointer]: 模拟战略
+                - listitem [ref=e174] [cursor=pointer]:
+                  - generic [ref=e175] [cursor=pointer]:
+                    - generic [ref=e176] [cursor=pointer]:
+                      - generic [ref=e177] [cursor=pointer]: 教材完成度
+                      - generic [ref=e178] [cursor=pointer]:
+                        - generic [ref=e179] [cursor=pointer]: 93.8%
+                        - generic [ref=e180] [cursor=pointer]: 完成率
+                    - generic [ref=e181] [cursor=pointer]:
+                      - generic [ref=e182] [cursor=pointer]:
+                        - strong [ref=e184] [cursor=pointer]: "75"
+                        - generic [ref=e185] [cursor=pointer]: "目标: 80"
+                      - progressbar [ref=e186] [cursor=pointer]
+                    - generic [ref=e191] [cursor=pointer]: 模拟战略
+                - listitem [ref=e192] [cursor=pointer]:
+                  - generic [ref=e193] [cursor=pointer]:
+                    - generic [ref=e194] [cursor=pointer]:
+                      - generic [ref=e195] [cursor=pointer]: ROI
+                      - generic [ref=e196] [cursor=pointer]:
+                        - generic [ref=e197] [cursor=pointer]: 84.0%
+                        - generic [ref=e198] [cursor=pointer]: 完成率
+                    - generic [ref=e199] [cursor=pointer]:
+                      - generic [ref=e200] [cursor=pointer]:
+                        - strong [ref=e202] [cursor=pointer]: "2.1"
+                        - generic [ref=e203] [cursor=pointer]: "目标: 2.5"
+                      - progressbar [ref=e204] [cursor=pointer]
+                    - generic [ref=e209] [cursor=pointer]: 模拟战略
+                - listitem [ref=e210] [cursor=pointer]:
+                  - generic [ref=e211] [cursor=pointer]:
+                    - generic [ref=e212] [cursor=pointer]:
+                      - generic [ref=e213] [cursor=pointer]: 续费率
+                      - generic [ref=e214] [cursor=pointer]:
+                        - generic [ref=e215] [cursor=pointer]: 90.7%
+                        - generic [ref=e216] [cursor=pointer]: 完成率
+                    - generic [ref=e217] [cursor=pointer]:
+                      - generic [ref=e218] [cursor=pointer]:
+                        - strong [ref=e220] [cursor=pointer]: "68"
+                        - generic [ref=e221] [cursor=pointer]: "目标: 75"
+                      - progressbar [ref=e222] [cursor=pointer]
+                    - generic [ref=e227] [cursor=pointer]: 模拟战略
+                - listitem [ref=e228] [cursor=pointer]:
+                  - generic [ref=e229] [cursor=pointer]:
+                    - generic [ref=e230] [cursor=pointer]:
+                      - generic [ref=e231] [cursor=pointer]: 转介绍率
+                      - generic [ref=e232] [cursor=pointer]:
+                        - generic [ref=e233] [cursor=pointer]: 83.3%
+                        - generic [ref=e234] [cursor=pointer]: 完成率
+                    - generic [ref=e235] [cursor=pointer]:
+                      - generic [ref=e236] [cursor=pointer]:
+                        - strong [ref=e238] [cursor=pointer]: "25"
+                        - generic [ref=e239] [cursor=pointer]: "目标: 30"
+                      - progressbar [ref=e240] [cursor=pointer]
+                    - generic [ref=e245] [cursor=pointer]: 模拟战略
+          - generic [ref=e251] [cursor=pointer]:
+            - generic [ref=e252] [cursor=pointer]: 📊
+            - generic [ref=e253] [cursor=pointer]: 任务状态分布
+        - generic [ref=e261] [cursor=pointer]:
+          - generic [ref=e262] [cursor=pointer]: 📈
+          - generic [ref=e263] [cursor=pointer]: 趋势分析
+          - generic [ref=e264] [cursor=pointer]: 4周数据对比
+        - generic [ref=e272] [cursor=pointer]:
+          - generic [ref=e273] [cursor=pointer]: 📊
+          - generic [ref=e274] [cursor=pointer]: KPI 对比分析
+          - generic [ref=e275] [cursor=pointer]: 当前值 vs 目标值
+        - generic [ref=e277]:
+          - generic [ref=e279] [cursor=pointer]:
+            - generic [ref=e283] [cursor=pointer]:
+              - generic [ref=e284] [cursor=pointer]: 🎯
+              - generic [ref=e285] [cursor=pointer]: 最近创建的战略
+            - generic [ref=e291] [cursor=pointer]:
+              - img "暂无数据" [ref=e293] [cursor=pointer]
+              - generic [ref=e299] [cursor=pointer]: 暂无数据
+          - generic [ref=e301] [cursor=pointer]:
+            - generic [ref=e305] [cursor=pointer]:
+              - generic [ref=e306] [cursor=pointer]: 📋
+              - generic [ref=e307] [cursor=pointer]: 最新任务
+            - generic [ref=e313] [cursor=pointer]:
+              - img "暂无数据" [ref=e315] [cursor=pointer]
+              - generic [ref=e321] [cursor=pointer]: 暂无数据
+```

@@ -12,6 +12,7 @@ import projectRoutes from './routes/projectRoutes';
 import taskRoutes from './routes/taskRoutes';
 import kpiRoutes from './routes/kpiRoutes';
 import aiRoutes from './routes/aiRoutes';
+import calendarRoutes from './routes/calendarRoutes';
 
 // 加载环境变量
 dotenv.config();
@@ -23,14 +24,28 @@ const PORT = process.env.PORT || 3001;
 // 请求限制中间件
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15分钟
-  max: 100, // 限制每个IP每15分钟最多100个请求
+  max: 1000, // 限制每个IP每15分钟最多1000个请求
   message: '请求过于频繁，请稍后再试'
 });
 
 // 中间件
 app.use(helmet());
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: [
+    process.env.FRONTEND_URL || 'http://localhost:3000',
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'http://localhost:5175',
+    'http://localhost:5176',
+    'http://localhost:5177',
+    'http://localhost:5178',
+    'http://localhost:5179',
+    'http://localhost:5180',
+    'http://localhost:5181',
+    'http://localhost:5182',
+    'http://localhost:5183',
+    'http://localhost:5184'
+  ],
   credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
@@ -54,6 +69,7 @@ app.use('/api/projects', projectRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/kpis', kpiRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/calendar', calendarRoutes);
 
 // 错误处理中间件
 app.use(errorHandler);

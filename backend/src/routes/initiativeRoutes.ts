@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { asyncHandler, createError } from '../middleware/errorHandler';
 
@@ -6,7 +6,7 @@ const router = express.Router();
 const prisma = new PrismaClient();
 
 // 获取所有战役
-router.get('/', asyncHandler(async (req, res) => {
+router.get('/', asyncHandler(async (_req: Request, res: Response) => {
   const initiatives = await prisma.initiative.findMany({
     include: {
       strategy: true,
@@ -26,7 +26,7 @@ router.get('/', asyncHandler(async (req, res) => {
 }));
 
 // 创建战役
-router.post('/', asyncHandler(async (req, res) => {
+router.post('/', asyncHandler(async (req: Request, res: Response) => {
   const { name, description, strategyId } = req.body;
 
   if (!name || !strategyId) {
